@@ -30,12 +30,11 @@ bool compare(int x, int y)
 string solution(vector<int> numbers) {
 	string answer = "";
 
-	int lop = numbers.size() - 1;
-	int end = numbers.size();
+	int len = numbers.size();
 
 	sort(numbers.begin(), numbers.end(), compare);
 
-	for (int i = 0; i < lop + 1; i++) 
+	for (int i = 0; i < len; i++) 
 		answer += to_string(numbers[i]);
 
 	if (answer.front() == '0')answer = '0';
