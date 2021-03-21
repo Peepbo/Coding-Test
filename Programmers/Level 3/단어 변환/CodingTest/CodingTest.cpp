@@ -44,7 +44,7 @@ bool checkWord(string now, string next)
 	return false;
 }
 
-void dfs(string start, string target)
+void bfs(string start, string target)
 {
 	unordered_map<string, bool> visit;
 	queue<pair<string, int>> q;
@@ -90,7 +90,7 @@ int solution(string begin, string target, vector<string> words) {
 		}
 	}
 
-	dfs(begin, target);
+	bfs(begin, target);
 
 	return len;
 }
