@@ -6,25 +6,25 @@
 using namespace std;
 
 int solution(vector<int> scoville, int K) {
-    int answer = 0, firstSpicyFood, secondSpicyFood, mixedFood = 0;
+    int answer = 0, scovilleOfFirst, scovilleOfSecond, scovilleOfMixed = 0;
     priority_queue<int, vector<int>, greater<int>> scovilleChecker(scoville.begin(), scoville.end());
 
     while (scovilleChecker.size() > 1 && scovilleChecker.top() < K)
     {
-        firstSpicyFood = scovilleChecker.top();
+        scovilleOfFirst = scovilleChecker.top();
         scovilleChecker.pop();
 
-        secondSpicyFood = scovilleChecker.top();
+        scovilleOfSecond = scovilleChecker.top();
         scovilleChecker.pop();
 
-        mixedFood = firstSpicyFood + (secondSpicyFood * 2);
+        scovilleOfMixed = scovilleOfFirst + (scovilleOfSecond * 2);
 
-        scovilleChecker.push(mixedFood);
+        scovilleChecker.push(scovilleOfMixed);
 
         answer++;
     }
 
-    return mixedFood >= K ? answer : -1;
+    return scovilleOfMixed >= K ? answer : -1;
 }
 
 int main()
