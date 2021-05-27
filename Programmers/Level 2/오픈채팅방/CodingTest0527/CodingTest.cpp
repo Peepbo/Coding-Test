@@ -16,7 +16,7 @@ vector<string> solution(vector<string> record) {
     vector<string> answer;
     vector<chatData> saveChatData;
 
-    unordered_map<string, string> nicknameMap;
+    unordered_map<string, string> nickNameMap;
 
     istringstream ss;
     string behavior, id, nickName;
@@ -26,8 +26,8 @@ vector<string> solution(vector<string> record) {
         ss.str(stringData);
         ss >> behavior >> id >> nickName;
 
-        if (!nickName.empty()) nicknameMap[id] = nickName;
-        saveChatData.push_back({ behavior[0], id });
+        if (!nickName.empty()) nickNameMap[id] = nickName;
+        if (behavior[0] != 'C') saveChatData.push_back({ behavior[0], id });
 
         ss.clear();
         nickName = "";
@@ -35,12 +35,10 @@ vector<string> solution(vector<string> record) {
 
     for (const chatData& data : saveChatData)
     {
-        if (data.behavior == 'C')continue;
-
         if (data.behavior == 'E') 
-            answer.emplace_back(nicknameMap[data.id] + "님이 들어왔습니다.");
+            answer.emplace_back(nickNameMap[data.id] + "님이 들어왔습니다.");
         else
-            answer.emplace_back(nicknameMap[data.id] + "님이 나갔습니다.");
+            answer.emplace_back(nickNameMap[data.id] + "님이 나갔습니다.");
     }
 
     return answer;
