@@ -54,7 +54,15 @@ int solution(vector<vector<int>> board) {
 
             //가려는 곳이 처음 방문했거나, 계산한 코스트가 더 적게 들었을 때
             //현재 위치의 비용을 계산한 코스트로 대체하고, 큐에 추가한다.
-            if (board[nextX][nextY] == 0 || board[nextX][nextY] > nextCost)
+            // 
+            //왜 같을 때의 경우 새로 원소를 추가할까?
+            //똑같은 경우를 두 번 계산하는게 아니냐??
+            // 
+            //대답은 두 경우는 똑같지 않다. 
+            //차의 방향이 다른데 cost가 같을 수 있기 때문이다.
+            //예제 {{0,0,1,0},{0,0,0,0},{0,1,0,1},{1,0,0,0}}
+            //같을 때의 경우에도 방향이 다를 수 있어, 새로 큐에 원소를 넣어야 한다.
+            if (board[nextX][nextY] == 0 || board[nextX][nextY] >= nextCost)
             {
                 board[nextX][nextY] = nextCost;
                 Car nextCar{ nextX,nextY,nextCost,i };
