@@ -63,9 +63,9 @@ int solution(vector<vector<int>> board) {
             //차의 방향이 다른데 cost가 같을 수 있기 때문이다.
             //예제 {{0,0,1,0},{0,0,0,0},{0,1,0,1},{1,0,0,0}}
             //같을 때의 경우에도 방향이 다를 수 있어, 새로 큐에 원소를 넣어야 한다.
-            if (board[nextX][nextY] == 0 || board[nextX][nextY] >= nextCost)
+            if (board[nextY][nextX] == 0 || board[nextY][nextX] >= nextCost)
             {
-                board[nextX][nextY] = nextCost;
+                board[nextY][nextX] = nextCost;
 
                 q.push({ nextX,nextY,nextCost,i });
             }
