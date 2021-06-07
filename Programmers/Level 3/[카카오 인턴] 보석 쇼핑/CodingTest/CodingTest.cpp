@@ -1,48 +1,62 @@
-﻿#include <iostream>
-#include <string>
+﻿#include <string>
 #include <vector>
 #include <map>
-#include <algorithm>
 
 using namespace std;
 
 vector<int> solution(vector<string> gems) {
-	vector<int> answer;
+	vector<int> answer{ 1, (int)gems.size() };
 
-	map<string,int> m;
-	m.insert({ gems[0],1 });
+	map<string, int> m;
 
-	vector<string> temp(gems.begin(), gems.end());
-	sort(temp.begin(),temp.end());
-	temp.erase(unique(temp.begin(), temp.end()), temp.end());
+	for (const string& str : gems)
+		m[str]++;
 
-	int maximum = temp.size();
+	int total = m.size();
+	int diff = gems.size();
+	int s = 0, e = 0;
 
-	int low = 100, high = 1;
+	m.clear();
 
-	for (int i = 1; i < gems.size(); i++)
+	while (true)
 	{
-		if (m.size() == maximum)break;
+		//모든 보석이 다 담긴 경우
+		if (m.size() == total)
+		{
+			if (diff > e - s)
+			{
+				diff = e - s;
+				answer[0] = s + 1;
+				answer[1] = e;
+			}
 
-		high = i + 1;
-		m[gems[i]] = high;
+			if (m[gems[s]] == 1)
+			{
+				m.erase(gems[s]);
+				s++;
+			}
+
+			else if (m[gems[s]] - 1 > 0)
+			{
+				m[gems[s]]--;
+				s++;
+			}
+		}
+
+		//끝까지 탐색하면 종료
+		else if (e == gems.size())break;
+		//보석 종류를 다 포함하지 못하면 끝 인덱스를 이동
+		else 
+		{
+			m[gems[e]]++;
+			e++;
+		}
 	}
 
-
-	for (const auto& it : m)
-	{
-		if (low > it.second)low = it.second;
-	}
-
-	return { low,high };
+	return answer;
 }
 
 int main()
 {
-	//dia,0
-	//ruby,0
 
-
-	//          0     0      1      1     2       0          0       3     
-	solution({"DIA","RUBY","RUBY","DIA","DIA","EMERALD","SAPPHIRE","DIA"});
 }
