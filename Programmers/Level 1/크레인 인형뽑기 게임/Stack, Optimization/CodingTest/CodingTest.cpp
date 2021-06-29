@@ -7,31 +7,35 @@ using namespace std;
 
 int numbers[31];
 
+void reverse(vector<vector<int>>& vv)
+{
+	int begin = 0, end = vv.size() - 1;
+
+	while (begin < end)
+	{
+		swap(vv[begin++], vv[end--]);
+	}
+}
+
 int solution(vector<vector<int>> board, vector<int> moves) {
-	int answer = 0, wSize = board.size(), hSize = wSize / 2, h, pick;
+	int answer = 0, wSize = board.size(), w, h, pick;
 	stack<int> basket;
+
+	reverse(board);
 
 	for (int width = 0; width < wSize; width++)
 	{
 		for (int height = 0; height < wSize; height++)
 		{
-			if (board[height][width] != 0 && numbers[width] == 0)
-			{
-				numbers[width] = (wSize - height) - 1;
-			}
+			if (board[height][width] == 0)break;
+
+			numbers[width] = height;
 		}
 	}
 
-	for (int i = 0; i < hSize; i++)
+	for (const int& move : moves)
 	{
-		if (i == (wSize - 1) - i)break;
-
-		swap(board[i], board[(wSize - 1) - i]);
-	}
-
-	for (int& w : moves)
-	{
-		w--;
+		w = move - 1;
 		if (numbers[w] < 0)continue;
 
 		h = numbers[w]--;
@@ -51,12 +55,7 @@ int solution(vector<vector<int>> board, vector<int> moves) {
 
 int main()
 {
-	cout << solution({
-		{ 0,0,0,0,0 },
-		{ 0,0,1,0,3 },
-		{ 0,2,5,0,1 },
-		{ 4,2,4,4,2 },
-		{ 3,5,1,3,1 }},
+	cout << solution({ {0,0,0,0,0},{0,0,1,0,3},{0,2,5,0,1},{4,2,4,4,2},{3,5,1,3,1} }, { 1,5,3,5,1,2,1,4 });
 
-		{ 1,5,3,5,1,2,1,4 });
+	return 0;
 }
