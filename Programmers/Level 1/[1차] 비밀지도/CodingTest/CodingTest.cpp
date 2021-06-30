@@ -1,64 +1,55 @@
-﻿#include <string>
+﻿#include <iostream>
+#include <string>
 #include <vector>
-#include <math.h>
+#include <algorithm>
 
 using namespace std;
 
+vector<int> binarize(int& decimal, const int& n)
+{
+	vector<int> output(n);
+
+	int idx = n - 1;
+
+	while (decimal > 0)
+	{
+		output[idx--] = decimal % 2;
+		decimal /= 2;
+	}
+
+	return output;
+}
+
 vector<string> solution(int n, vector<int> arr1, vector<int> arr2) {
-	vector<string> answer;
-	string str;
-	for (int i = 0; i < n; i++)
-	{
-		for (int j = 0; j < n; j++)
-		{
-			str += " ";
-		}
-		answer.push_back(str);
-		str = "";
-	}
-	vector<int> check;
-	int num = n - 1;
-	while (num >= 0)
-	{
-		check.push_back(pow(2, num));
-		num--;
-		//2의 5승,4승,3승,2승,1승,0승
-	}
-	for (int i = 0; i < n; i++)
-	{
-		for (int j = 0; j < n; j++)
-		{
-			if (check[j] > arr1[i]) {
-				continue;
-			}
+	vector<string> answer(n);
+	vector<int> mapPiece1, mapPiece2;
 
-			answer[i][j] = '#';
-			if (check[i] - arr1[j] == 0) break;
-			else {
-				arr1[i] -= check[j];
-				continue;
-			}
-		}
-	}
 	for (int i = 0; i < n; i++)
 	{
+		mapPiece1 = binarize(arr1[i], n);
+		mapPiece2 = binarize(arr2[i], n);
+
 		for (int j = 0; j < n; j++)
 		{
-			if (check[j] > arr2[i]) {
-				continue;
-			}
-
-			answer[i][j] = '#';
-			if (check[i] - arr2[j] == 0) break;
-			else {
-				arr2[i] -= check[j];
-				continue;
-			}
+			if (mapPiece1[j] == 1 || mapPiece2[j] == 1)
+				answer[i] += "#";
+			else
+				answer[i] += " ";
 		}
 	}
+
 	return answer;
 }
 
 int main()
 {
+	int n = 5;
+	vector<int> arr1{ 9,20,28,18,11 }, arr2{ 30,1,21,17,28 };
+	
+	vector<string> v = solution(n, arr1, arr2);
+
+	for (const auto& it : v)
+	{
+		cout << it << '\n';
+	}
 }
