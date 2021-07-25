@@ -1,6 +1,4 @@
 ﻿#include <iostream>
-
-#include <string>
 #include <vector>
 
 using namespace std;
@@ -8,25 +6,28 @@ using namespace std;
 bool matrix[101][101];
 
 int solution(int n, vector<vector<int>> results) {
-    int answer = 0;
+    int answer = 0, win, loss;
 
     for (const vector<int>& result : results) {
-        matrix[result[0]][result[1]] = true;
+        win = result[0];
+        loss = result[1];
+
+        matrix[win][loss] = true;
     }
 
-    for (int z = 1; z <= n; z++) {
-        for (int y = 1; y <= n; y++) {
-            for (int x = 1; x <= n; x++) {
-                if (matrix[y][z] && matrix[z][x])
-                    matrix[y][x] = true;
+    for (int l = 1; l <= n; l++) {
+        for (int w = 1; w <= n; w++) {
+            for (int ll = 1; ll <= n; ll++) {
+                if (matrix[w][l] && matrix[l][ll])
+                    matrix[w][ll] = true;
             }
         }
     }
 
-    for (int y = 1; y <= n; y++) {
+    for (int a = 1; a <= n; a++) {
         int count = 0;
-        for (int x = 1; x <= n; x++) {
-            if (matrix[y][x] || matrix[x][y])
+        for (int b = 1; b <= n; b++) {
+            if (matrix[a][b] || matrix[b][a])
                 count++;
         }
 
@@ -37,9 +38,7 @@ int solution(int n, vector<vector<int>> results) {
     return answer;
 }
 
-int main()
-{
-    cout << solution(5, { {4,3},{4,2},{3,2},{1,2},{2,5} });
+int main() {
 
 	return 0;
 }
