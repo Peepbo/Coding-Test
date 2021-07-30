@@ -3,26 +3,18 @@
 
 using namespace std;
 
-struct Point
-{
+struct Point {
 	int x, y;
-
-	bool operator==(Point& ptr) {
-		return (x == ptr.x && y == ptr.y);
-	}
 };
 
 struct InspectionRecord {
 	int manhattanDistance;
 	vector<Point> inspectionLocation;
-
-	InspectionRecord(int dist, vector<Point> location):
-		manhattanDistance{dist},inspectionLocation{location}{}
 };
 
 vector<Point> GetPeoples(const vector<string>& place) {
 	vector<Point> peoples;
-	
+
 	for (int x = 0; x < 5; x++) {
 		for (int y = 0; y < 5; y++) {
 			if (place[x][y] == 'P')
@@ -48,20 +40,21 @@ InspectionRecord GetInspectionRecord(const Point& p1, const Point& p2) {
 	return { abs(p1.x - p2.x) + abs(p1.y - p2.y), location };
 }
 
-int CheckingQuarantineRules(vector<Point>& peoples, const vector<string>& place) {
-	for (Point& posA : peoples) {
-		for (Point& posB : peoples) {
-			//same pos continue
-			if (posA == posB)continue;
+int CheckingQuarantineRules(const vector<Point>& peoples, const vector<string>& place) {
+	int peopleSize = peoples.size();
 
-			auto record = GetInspectionRecord(posA, posB);
+	for (int i = 0; i < peopleSize; i++) {
+		for (int j = i + 1; j < peopleSize; j++) {
+			auto record = GetInspectionRecord(peoples[i], peoples[j]);
 
 			if (record.manhattanDistance == 1)return 0;
 			else if (record.manhattanDistance > 2)continue;
 
 			//now hear manhattanDistance == 2
+			const Point& standard = peoples[i];
+
 			for (const Point& location : record.inspectionLocation) {
-				if (place[posA.x + location.x][posA.y + location.y] != 'X')
+				if (place[standard.x + location.x][standard.y + location.y] != 'X')
 					return 0;
 			}
 		}
@@ -77,7 +70,6 @@ vector<int> solution(vector<vector<string>> places) {
 		//find People
 		auto peoples = GetPeoples(place);
 
-		//divide function
 		answer.emplace_back(CheckingQuarantineRules(peoples, place));
 	}
 
