@@ -11,24 +11,18 @@ struct Point {
 	int x, y;
 };
 
-int solve(const int& target, const Point& pos, int& cost) {
-	if (pos.x < 0 || pos.x >= *N || pos.y < 0 || pos.y >= *M)return cost;
-	if ((*Visited)[pos.y][pos.x])return cost;
-	if ((*Picture)[pos.y][pos.x] != target)return cost;
+void solve(const int& target, const Point& pos, int& cost) {
+	if (pos.x < 0 || pos.x >= *N || pos.y < 0 || pos.y >= *M)return;
+	if ((*Visited)[pos.y][pos.x])return;
+	if ((*Picture)[pos.y][pos.x] != target)return;
 
 	(*Visited)[pos.y][pos.x] = true;
 	cost++;
 
-	//left
-	cost = solve(target, { pos.x - 1, pos.y }, cost);
-	//right
-	cost = solve(target, { pos.x + 1, pos.y }, cost);
-	//up
-	cost = solve(target, { pos.x, pos.y - 1 }, cost);
-	//down
-	cost = solve(target, { pos.x, pos.y + 1 }, cost);
-
-	return cost;
+	solve(target, { pos.x - 1, pos.y }, cost); // left
+	solve(target, { pos.x + 1, pos.y }, cost); // right
+	solve(target, { pos.x, pos.y - 1 }, cost); // up
+	solve(target, { pos.x, pos.y + 1 }, cost); // down
 }
 
 // 전역 변수를 정의할 경우 함수 내에 초기화 코드를 꼭 작성해주세요.
