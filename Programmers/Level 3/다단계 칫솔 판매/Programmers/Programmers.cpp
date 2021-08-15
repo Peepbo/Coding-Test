@@ -10,26 +10,22 @@ public:
 	Employee* referrer = nullptr;
 	int profit = 0;
 public:
-	void share_the_profits(int referrerProfit) {
-		if (referrerProfit == 0 || referrer == nullptr)return;
+	void share_the_profits(int totalProfit) {
+		if (totalProfit == 0 || referrer == nullptr)return;
 
-		share_the_profits_recur(referrer, referrerProfit);
-	}
-private:
-	void share_the_profits_recur(Employee* employee, int referrerProfit) {
-		if (referrerProfit == 0 || employee == nullptr)return;
+		int referrerProfit = totalProfit * 0.1f;
+		profit += totalProfit - referrerProfit;
 
-		int nextProfit = referrerProfit * 0.1f;
-		employee->profit += referrerProfit - nextProfit;
-		share_the_profits_recur(employee->referrer, nextProfit);
+		referrer->share_the_profits(referrerProfit);
 	}
 };
 
 vector<int> solution(vector<string> enroll, vector<string> referral, vector<string> seller, vector<int> amount) {
-	vector<int> answer;
+	vector<int> answer(enroll.size());
 	map<string, Employee*> m;
+	const int quaternion = enroll.size(), number_of_sellers = seller.size();
 
-	for (int i = 0; i < enroll.size(); i++) {
+	for (int i = 0; i < quaternion; i++) {
 		if (m.find(enroll[i]) == m.end())
 			m[enroll[i]] = new Employee;
 		if (m.find(referral[i]) == m.end())
@@ -38,16 +34,14 @@ vector<int> solution(vector<string> enroll, vector<string> referral, vector<stri
 		m[enroll[i]]->referrer = m[referral[i]];
 	}
 
-	for (int i = 0; i < seller.size(); i++) {
+	for (int i = 0; i < number_of_sellers; i++) {
 		int totalProfit = amount[i] * 100;
-		int referrerProfit = totalProfit * 0.1f;
-		
-		m[seller[i]]->profit += totalProfit - referrerProfit;
-		m[seller[i]]->share_the_profits(referrerProfit);
+
+		m[seller[i]]->share_the_profits(totalProfit);
 	}
 
-	for (int i = 0; i < enroll.size(); i++) {
-		answer.emplace_back(m[enroll[i]]->profit);
+	for (int i = 0; i < quaternion; i++) {
+		answer[i] = m[enroll[i]]->profit;
 	}
 
 	return answer;
