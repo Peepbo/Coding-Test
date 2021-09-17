@@ -1,63 +1,59 @@
 ﻿#include <string>
 #include <vector>
-#include <map>
 #include <set>
 
 using namespace std;
 
 int Answer, BanSize;
-map<vector<int>, int> M;
-vector<vector<int>> VV;
+set<set<int>> Candidate;
+vector<vector<int>> Candidate_list;
 
-void recur(set<int> s, int depth) {
-	if (depth == BanSize) {
-		vector<int> list_id(s.begin(), s.end());
+bool isCandidate(const string& id, const string& banned_id) {
+	if (banned_id.size() != id.size())return false;
 
-		if (M.find(list_id) == M.end()) {
-			M[list_id]++;
-			Answer++;
-		}
-		return;
-	}
-
-	for (const auto& num : VV[depth]) {
-		auto temp = s;
-
-		if (temp.find(num) != temp.end())continue;
-
-		temp.insert(num);
-		recur(temp, depth + 1);
-	}
-}
-
-bool check(const string& id, const string& ban) {
-	if (ban.size() != id.size())return false;
-
-	for (int i = 0; i < ban.size(); i++) {
-		if (ban[i] == '*')continue;
-		if (ban[i] != id[i])return false;
+	for (int i = 0; i < banned_id.size(); i++) {
+		if (banned_id[i] != '*' && banned_id[i] != id[i])return false;
 	}
 
 	return true;
 }
 
+void backTracking(set<int>& s, int depth) {
+	if (depth == BanSize) {
+		if (Candidate.find(s) == Candidate.end()) {
+			Candidate.insert(s);
+			Answer++;
+		}
+		return;
+	}
+
+	for (const int& num : Candidate_list[depth]) {
+		if (s.find(num) != s.end())continue;
+
+		s.insert(num);
+		backTracking(s, depth + 1);
+		s.erase(num);
+	}
+}
+
 int solution(vector<string> user_id, vector<string> banned_id) {
 	BanSize = banned_id.size();
 
-	VV.assign(BanSize, vector<int>());
+	Candidate_list.assign(BanSize, vector<int>());
 
-	//가능성 구하기
-	for (int ban = 0; ban < BanSize; ban++) {
-		for (int id = 0; id < user_id.size(); id++) {
-			if (!check(user_id[id], banned_id[ban]))continue;
+	//후보자 구하기
+	for (int banned = 0; banned < BanSize; banned++) {
+		for (int user = 0; user < user_id.size(); user++) {
+			if (isCandidate(user_id[user], banned_id[banned]) == false)continue;
 
-			VV[ban].emplace_back(id);
+			Candidate_list[banned].emplace_back(user);
 		}
 	}
 
 	//조합 해보기
-	for (const auto& num : VV[0]) {
-		recur({ num }, 1);
+	for (const int& num : Candidate_list[0]) {
+		set<int> s{ num };
+		backTracking(s, 1);
 	}
 
 	return Answer;
