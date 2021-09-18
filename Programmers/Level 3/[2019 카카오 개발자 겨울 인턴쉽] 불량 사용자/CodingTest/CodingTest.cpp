@@ -4,7 +4,7 @@
 
 using namespace std;
 
-int Answer, BanSize;
+int Answer, Banned_Size;
 set<set<int>> Candidate;
 vector<vector<int>> Candidate_list;
 
@@ -19,7 +19,7 @@ bool isCandidate(const string& id, const string& banned_id) {
 }
 
 void backTracking(set<int>& s, int depth) {
-	if (depth == BanSize) {
+	if (depth == Banned_Size) {
 		if (Candidate.find(s) == Candidate.end()) {
 			Candidate.insert(s);
 			Answer++;
@@ -37,12 +37,12 @@ void backTracking(set<int>& s, int depth) {
 }
 
 int solution(vector<string> user_id, vector<string> banned_id) {
-	BanSize = banned_id.size();
+	Banned_Size = banned_id.size();
 
-	Candidate_list.assign(BanSize, vector<int>());
+	Candidate_list.assign(Banned_Size, vector<int>());
 
 	//후보자 구하기
-	for (int banned = 0; banned < BanSize; banned++) {
+	for (int banned = 0; banned < Banned_Size; banned++) {
 		for (int user = 0; user < user_id.size(); user++) {
 			if (isCandidate(user_id[user], banned_id[banned]) == false)continue;
 
