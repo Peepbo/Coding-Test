@@ -12,15 +12,6 @@ vector<vector<int>> Land;
 int Height, MaxRange, VisitCount, Need;
 
 struct Option {
-    bool operator< (const Option& other)const {
-        if (visit[y][x])return true;
-        else if (visit[other.y][other.x])return false;
-
-        if (c != other.c)return c > other.c;
-        if (x != other.x)return x > other.x;
-        return y > other.y;
-    }
-
     int x, y, c;
 };
 
