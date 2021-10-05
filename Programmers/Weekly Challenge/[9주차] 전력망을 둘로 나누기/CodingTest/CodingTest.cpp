@@ -1,14 +1,12 @@
-﻿#include <iostream>
-#include <string>
+﻿#include <string>
 #include <vector>
-#include <queue>
 
 using namespace std;
 
 const int INF = 999999999;
 vector<vector<int>> list;
 
-void dfs(int start, const int& exclu, vector<bool>& visited, int& count) {
+void dfs(const int& start, const int& exclu, vector<bool>& visited, int& count) {
 	if (visited[start] || start == exclu)return;
 	visited[start] = true;
 
@@ -48,10 +46,4 @@ int solution(int n, vector<vector<int>> wires) {
 	}
 
 	return answer;
-}
-
-int main(void) {
-	solution(9, { {1,3},{2,3},{3,4},{4,5},{4,6},{4,7},{7,8},{7,9} });
-
-	return 0;
 }
