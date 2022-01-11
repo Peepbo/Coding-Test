@@ -1,94 +1,116 @@
 ﻿#include <iostream>
 #include <string>
 #include <vector>
-#include <cstring>
-#include <unordered_set>
+#include <algorithm>
 
 using namespace std;
 
-int arr[101][101];
-bool visit[101];
-int minCost = -1;
-unordered_set<int> s;
+class suttleBus {
+public:
+	suttleBus(int n, int t, int m):
+		number{ n }, interval{ t }, capacity{ m },
+		total{ 540 }, answer{ 0 } {}
 
-void DP(const int& number, int cost,const int& cycle)
-{
-    if (s.size() == cycle)
-    {
-        for (const auto& it : s)
-        {
-            cout << it << ' ';
-        }
-        cout << '\n';
-        cout << "end!" << '\n';
+	void addCrew(vector<int> times) {
+		int idx = 0, nCapacity = 0;
+		const int lastBusTime = total + (interval * (number - 1));
+		int lastCrewTime = -1;
 
-        if (minCost == -1)minCost = cost;
-        else minCost = min(minCost, cost);
-        cout << "minCost : " << minCost << "\n\n";
-        return;
-    }
+		while (number) {
+			// 종료 조건
+			// 1. 모든 크루원을 검사했을 때
+			// 2. 현재 크루원이 버스 마지막 시간보다 늦을 때
+			if (idx == times.size() || lastBusTime < times[idx]) {
+				break;
+			}
 
-    cout << "num : " << number << '\n';
-    cout << "now cost : " << cost << "\n\n";
+			// 탑승 조건
+			// 1. 크루원이 버스 시간에 맞춰 왔을 때
+			// 2. 버스의 잔여 좌석이 있을 때
+			if (total >= times[idx]) {
+				nCapacity++;
+				lastCrewTime = times[idx];
+				idx++;
 
-    s.insert(number);
+				if (nCapacity == capacity) {
+					nCapacity = 0;
+					number--;
+					total += interval;
+				}
+			}
+			else {
+				nCapacity = 0;
+				number--;
+				total += interval;
+			}
+		}
 
-    for (const auto& it : s)
-    {
-        cout << it << '-';
-    }
-    cout << "\n\n";
+		// number가 valid 하다면? (n>0)
+		if (number > 0) {
+			answer = lastBusTime;
+		}
+		else {
+			// 만약 number가 valid하지 않다면 (n=0)?
+			// 가장 마지막에 탑승한 크루 시간 - 1
+			answer = lastCrewTime - 1;
+		}
+	}
 
-    for (int i = 0; i < cycle; i++)
-    {
-        if (arr[number][i] == 0 && visit[i]) continue;
+public:
+	int number, interval, capacity;
+	int total;
+	int answer;
+};
 
-        int plus;
-        if (!visit[i])
-        {
-            plus = arr[number][i];
-        }
-        else plus = 0;
+vector<int> vectorStringToTimes(vector<string> timetable) {
+	vector<int> times(timetable.size());
+	string timeData;
+	int hour, minute;
 
-        cout << number << "->" << i << '\n';
+	for (int i = 0; i < timetable.size(); i++) {
+		timeData = timetable[i];
 
-        //cost += plus;
-        arr[number][i] = 0;
-        visit[i] = true;
+		hour = (timeData[0] - '0') * 10 + (timeData[1] - '0');
+		minute = (timeData[3] - '0') * 10 + (timeData[4] - '0');
 
-        DP(i, cost + plus, cycle);
+		times[i] = hour * 60 + minute;
+	}
 
-        //cost -= plus;
-        arr[number][i] = plus;
-        visit[i] = false;
-    }
-
-    s.erase(number);
+	return times;
 }
 
-int solution(int n, vector<vector<int>> costs) {
-    int temp;
-    for (const auto& it : costs)
-    {
-        int land0 = it[0];
-        int land1 = it[1];
-        int cost = it[2];
-
-        arr[land0][land1] = cost;
-        arr[land1][land0] = cost;
-    }
-
-    visit[0] = true;
-    temp = 0;
-    DP(0, temp, n);
-
-    return minCost;
+string intToStringTime(int iTime) {
+	string output;
+	int hour = iTime / 60;
+	int minute = iTime % 60;
+	output += hour / 10 + '0';
+	output += hour % 10 + '0';
+	output += ':';
+	output += minute / 10 + '0';
+	output += minute % 10 + '0';
+	return output;
 }
 
-int main()
-{
-    //cout<< solution(4, { {0,1,1},{0,2,2},{1,2,5},{1,3,1},{2,3,8} });
-    cout << solution(5, { {0,1,1},{3,1,1},{0,2,2},{0,2,2},{0,3,2},{0,4,100} });
- 
-    return 0;
+string solution(int n, int t, int m, vector<string> timetable) {
+	string answer = "";
+	suttleBus bus(n, t, m);
+
+	vector<int> crewTime = vectorStringToTimes(timetable);
+	sort(crewTime.begin(), crewTime.end());
+
+	bus.addCrew(crewTime);
+
+	return intToStringTime(bus.answer);
+}
+
+int main(void) {
+	//cout << solution(1, 1, 5, { "08:00", "08:01", "08:02", "08:03" });
+	//cout << solution(2, 1, 2, { "09:00", "09:00", "09:00", "09:00" });
+	//cout << solution(2, 10, 2, { "09:10", "09:09", "08:00" });
+	//cout << solution(1, 1, 5, { "00:01", "00:01", "00:01", "00:01", "00:01" });
+	//cout << solution(1, 1, 1, { "23:59" });
+	//cout << solution(10, 60, 45, { "23:59","23:59" ,"23:59" ,"23:59" ,"23:59" ,"23:59" ,"23:59" ,"23:59" ,"23:59" ,"23:59" ,"23:59" ,"23:59" ,"23:59" ,"23:59" ,"23:59" ,"23:59" });
+	//10, 1, 5, ["09:00", "09:00", "09:00", "09:00", "09:00"] // "09:09"
+	//cout << solution(3, 30, 2, { "09:00","09:00","09:10","09:20","09:30","09:59","11:00" });
+	return 0;
 }
